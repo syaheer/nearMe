@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">NearMe</string>
+
+    <string name="yelp_consumer_key"></string>
+    <string name="yelp_consumer_secret"></string>
+    <string name="yelp_token"></string>
+    <string name="yelp_token_secret"></string>
+    <string name="google_maps_api_key"></string>
+
+    <string name="miles_away">%.1f miles away</string>
+    <string name="store_image">Store image</string>
+    <string name="view_map">View map</string>
+</resources>
