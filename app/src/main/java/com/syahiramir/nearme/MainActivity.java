@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                     String distanceToShow;
                     if (distanceInMile < (Double) 0.1) {
                         Double distanceInFeet = businesses.get(i).distance() * 3.28;
-                        distanceToShow = Integer.toString(distanceInFeet.intValue()) + " feet away";
+                        distanceToShow = String.format(getString(R.string.feet_away), distanceInFeet);
                     } else {
                         distanceToShow = String.format(getString(R.string.miles_away), distanceInMile);
                     }
@@ -243,6 +243,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Throwable t) {
                 Log.d("response", t.getMessage());
+
+                if(getResources().getString(R.string.yelp_consumer_key).equals("")){
+                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+
+                    // Setting Dialog Title
+                    alertDialog.setTitle("API keys not found");
+
+                    // Setting Dialog Message
+                    alertDialog.setMessage("Please add your Yelp API keys and Google Maps API key to the strings.xml resource file");
+
+                    // On pressing Settings button
+
+                    alertDialog.setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            });
+
+                    alertDialog.show();
+                }
             }
         };
 

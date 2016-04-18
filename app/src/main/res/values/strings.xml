@@ -8,6 +8,7 @@
     <string name="google_maps_api_key"></string>
 
     <string name="miles_away">%.1f miles away</string>
+    <string name="feet_away">%.0f feet away</string>
     <string name="store_image">Store image</string>
     <string name="view_map">View map</string>
 </resources>
