@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.syahiramir.nearme.adapter.BusinessesAdapter;
@@ -34,6 +35,8 @@ import com.yelp.clientlib.connection.YelpAPIFactory;
 import com.yelp.clientlib.entities.Business;
 import com.yelp.clientlib.entities.SearchResponse;
 import com.yelp.clientlib.entities.options.CoordinateOptions;
+
+import io.fabric.sdk.android.Fabric;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,11 +54,11 @@ import retrofit.Response;
 import retrofit.Retrofit;
 
 /**
- *  Created by Syahir on 4/16/16.
- *  An application to find nearby businesses using Yelp API v2. The app can also show mapview activity
- *  and saves data to cache to be used when there is no internet connection.
- *
- *  Originally made for Belly's coding challenge 2.
+ * Created by Syahir on 4/16/16.
+ * An application to find nearby businesses using Yelp API v2. The app can also show mapview activity
+ * and saves data to cache to be used when there is no internet connection.
+ * <p/>
+ * Originally made for Belly's coding challenge 2.
  */
 
 public class MainActivity extends AppCompatActivity {
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
         sharedpreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -244,7 +248,7 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Throwable t) {
                 Log.d("response", t.getMessage());
 
-                if(getResources().getString(R.string.yelp_consumer_key).equals("")){
+                if (getResources().getString(R.string.yelp_consumer_key).equals("")) {
                     AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
 
                     // Setting Dialog Title
@@ -280,6 +284,8 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults.length > 0
                         && grantResults[0] != PackageManager.PERMISSION_GRANTED) {
                     finish();
+                } else {
+                    getLongitudeLatitude();
                 }
             }
         }
@@ -297,15 +303,25 @@ public class MainActivity extends AppCompatActivity {
     //getting location permission
     private void getLocationPermission() {
 
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    LOCATION_PERMISSION);
+        }
+
+        getLongitudeLatitude();
+    }
+
+    private void getLongitudeLatitude(){
         Location location = getLastKnownLocation();
-        if (location == null){
+        if (location == null) {
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
             // Setting Dialog Title
             alertDialog.setTitle("Turn on location services");
 
             // Setting Dialog Message
-            alertDialog.setMessage("Please turn on location services.");
+            alertDialog.setMessage("Please turn on location services or turn off airplane mode.");
 
             // On pressing Settings button
 
